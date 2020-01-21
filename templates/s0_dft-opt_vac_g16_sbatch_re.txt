@@ -1,0 +1,62 @@
+#!/bin/bash
+#SBATCH --job-name=JOBNAME_re
+#SBATCH --output=JOBNAME.o
+#SBATCH --error=JOBNAME.e
+#SBATCH -n 14
+#SBATCH -N 1
+#SBATCH --mail-user=EMAIL
+#SBATCH --mail-type=END
+#SBATCH --parsable
+
+# Script for S0 DFT optimization (in vacuo) restart
+
+# source config and function files
+source_config
+
+gen_slurm_report
+
+#name of molecule and out/err files
+title='JOBNAME'
+log=$title.log
+inchi_key="${title/_S0_vac/}"
+
+# execute job
+timeout TIME time g16 $title.com
+timeout_status=$?
+
+# termination status (opt successful if termination=1, opt & freq successful if termination=2)
+termination=$(grep 'Normal termination' $log | wc -l)
+
+# end of job handling
+if [ $timeout_status -eq 124 ]; then            # if the run times out
+
+    # submit restart calc
+    restart_opt $title $FLOW_TOOLS/templates/dft-opt_g16_sbatch_re.txt
+
+elif [ $termination -eq 1 ]; then				# if the run completes successfully
+	
+	# move files to completed directory
+	mv $title* ../completed/
+	cd ../completed/
+	to_all_logs $log
+
+
+	# make pdb file of DFT optimized S0 (in vacuo) structure
+	obabel -i log $title.log -o pdb -O $inchi_key.pdb &>/dev/null
+	mv $inchi_key.pdb ../opt_pdbs/
+
+	# setup freq calc
+	setup_freq $log
+	
+	# make DFT optimization input files
+	cd ../opt_pdbs/
+	bash $FLOW_TOOLS/scripts/prep_dft-opts_re.sh $inchi_key.pdb
+	submit_all_dft_opts $inchi_key
+	exit 0	
+
+else
+    # move files to failed directory
+    mv $title* ../failed/failed_opt/
+	exit 1
+fi
+

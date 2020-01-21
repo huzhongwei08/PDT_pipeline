@@ -1,0 +1,86 @@
+{
+  "formula": null,
+  "smiles": null,
+  "inchi": null,
+  "inchi-key": null,
+  "properties": {
+    "mw": null,
+    "ip": null,
+    "rp": null,
+    "0-0_S1": null,
+    "0-0_T1": null,
+    "vee": null
+  },
+  "s0": {
+    "solv": {
+      "geom": null,
+      "energies": {
+        "total_electronic_energy": null,
+        "G": null,
+        "H": null,
+        "S": null,
+        "zpve": null,
+        "homo": null,
+        "lumo": null
+      }
+    },
+    "vac": {
+      "geom": null,
+      "energies": {
+        "total_electronic_energy": null,
+        "G": null,
+        "H": null,
+        "S": null,
+        "zpve": null,
+        "homo": null,
+        "lumo": null
+      }
+    }
+  },
+  "s1": {
+    "solv": {
+      "geom": null,
+      "energies": {
+        "total_electronic_energy": null,
+        "G": null,
+        "H": null,
+        "S": null,
+        "zpve": null
+      }
+    }
+  },
+  "t1": {
+    "solv": {
+      "geom": null,
+      "energies": {
+        "total_electronic_energy": null,
+        "G": null,
+        "H": null,
+        "S": null,
+        "zpve": null
+      }
+    }
+  },
+  "cat-rad": {
+    "solv": {
+      "geom": null,
+      "energies": {
+        "total_electronic_energy": null,
+        "G": null,
+        "H": null,
+        "S": null,
+        "zpve": null
+      }
+    },
+    "vac": {
+      "geom": null,
+      "energies": {
+        "total_electronic_energy": null,
+        "G": null,
+        "H": null,
+        "S": null,
+        "zpve": null
+      }
+    }
+  }
+}

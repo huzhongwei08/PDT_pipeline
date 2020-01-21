@@ -1,0 +1,1 @@
+time rungms JOBNAME.inp

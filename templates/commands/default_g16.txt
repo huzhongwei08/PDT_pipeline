@@ -1,0 +1,12 @@
+gen_slurm_report
+
+timeout 1420m time g16 JOBNAME.com
+
+timeout_status=$?
+
+# resubmit if timeout
+if [ $timeout_status -eq 124 ]; then
+	python $FLOW/scripts/restart-g16.py JOBNAME.com
+	sbatch JOBNAME.sbatch
+fi
+

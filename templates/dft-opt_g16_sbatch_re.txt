@@ -1,0 +1,50 @@
+#!/bin/bash
+#SBATCH --job-name=JOBNAME_re
+#SBATCH --output=JOBNAME.o
+#SBATCH --error=JOBNAME.e
+#SBATCH -n 14
+#SBATCH -N 1
+#SBATCH --mail-user=EMAIL
+#SBATCH --mail-type=END
+#SBATCH --parsable
+
+# source config and function files
+source_config
+
+gen_slurm_report
+
+# Script for DFT optimization restart
+
+#name of molecule and output file
+title='JOBNAME'
+log=$title.log
+
+# execute job
+timeout TIME time g16 $title.com
+timeout_status=$?
+
+# termination status (opt successful if termination=1, opt & freq successful if termination=2)
+termination=$(grep 'Normal termination' $log | wc -l)
+
+# check for convergence failure
+convergence_fail=$(grep 'Convergence failure' $log | wc -l)
+
+# end of job handling
+if [ $timeout_status -eq 124 ] || [ $convergence_fail -eq 1 ]; then            # if the run times out
+
+    # submit restart calc
+	restart_opt $title $FLOW_TOOLS/templates/dft-opt_g16_sbatch_re.txt
+
+elif [ $termination -eq 1 ]; then               # if the run terminated successfully
+    # move files to completed directory
+    mv $title* ../completed/
+	cd ../completed/
+    to_all_logs $log
+    setup_freq $log
+    exit 0
+else
+    # move files to failed directory
+    mv $title* ../failed_opt/
+    exit 1
+fi
+

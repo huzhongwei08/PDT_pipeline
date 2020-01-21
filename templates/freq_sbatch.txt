@@ -1,0 +1,55 @@
+#!/bin/bash
+#SBATCH --job-name=JOBNAME
+#SBATCH --output=JOBNAME.o
+#SBATCH --error=JOBNAME.e
+#SBATCH -n 14
+#SBATCH -N 1
+#SBATCH --mail-user=EMAIL
+#SBATCH --mail-type=END
+#SBATCH --parsable
+
+# Script for freq calculation
+source_config
+
+gen_slurm_report
+
+#name of molecule and output file
+title='JOBNAME'
+log=$title.log
+
+# check if job is already complete
+completed=$(already_done $log)
+
+# run job if incomplete
+if [[ $completed -eq 0 ]]; then
+    # execute job
+    timeout TIME time g16 $title.com
+    timeout_status=$?
+
+	# termination status (opt successful if termination=1, opt & freq successful if termination=2)
+	termination=$(grep 'Normal termination' $log | wc -l)
+else
+	termination=1
+    timeout_status=0
+fi
+
+# end of job handling
+if [ $timeout_status -eq 124 ]; then            # if the run times out
+
+    # submit restart calc
+	python $FLOW/scripts/restart-g16.py $title.com
+    sbatch $title.sbatch
+
+elif [ $termination -eq 1 ]; then               # if the run terminated successfully
+    # move files to completed directory
+    mv $title* ../completed/
+    cd ../completed/
+	to_all_logs $log
+    exit 0
+
+else
+    # move files to failed_freq directory
+    mv $title* ../failed_freq/
+    exit 1
+fi
+
