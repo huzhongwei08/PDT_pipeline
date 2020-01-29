@@ -4,7 +4,6 @@
 #SBATCH -e DFT-VEE_submitter.e
 #SBATCH -N 1
 #SBATCH -n 1
-#SBATCH --reservation=lopez_new
 #SBATCH -p general
 #SBATCH --parsable
 #SBATCH --dependency=afterany:LEE_ID

@@ -4,7 +4,6 @@
 #SBATCH -e %A_%a.e				
 #SBATCH -N 1			
 #SBATCH -n 14               			
-#SBATCH --reservation=lopez_new
 #SBATCH -p general
 #SBATCH --array=1-TOTAL%50 			
 #SBATCH --parsable
@@ -25,7 +24,7 @@ inchi_key="${input_file/_S0_vac.com/}"
 log=$title.log
 
 # check if job is already complete
-completed=$(already_done $log)
+completed=$(job_finished $log)
 
 # run job if incomplete
 if [[ $completed -eq 0 ]]; then

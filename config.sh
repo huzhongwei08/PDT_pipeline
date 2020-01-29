@@ -29,3 +29,8 @@ export DEFAULT_SIMULTANEOUS_JOBS=50
 export DFT_TIME=1340m
 export PM7_TIME=140m
 export TITLE=$(basename $MAIN_DIR)
+# -------------------------------------
+# Z. Hu, get the charge from PDB file
+cd $UNOPT_PDBS
+export CHARGE_PDB=$(charge_from_pdb.py)
+# -------------------------------------

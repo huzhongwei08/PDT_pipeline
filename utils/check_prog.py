@@ -3,7 +3,7 @@ import sys
 import glob
 import re
 import datetime
-
+import time
 
 def get_prog(directory, num_mols, name, output_type=".log", dft=False, print=True):
 
@@ -20,13 +20,13 @@ def get_prog(directory, num_mols, name, output_type=".log", dft=False, print=Tru
     if dft:
         num_complete = get_num_files(completed_dir, freq_output)
         num_resubmissions = get_num_files(resubmits_dir, output_type)
-        num_running = (get_num_files(directory, output_type) +
-                       get_num_files(resubmits_dir, output_type) +
-                       get_num_files(freq_calcs_dir, freq_output))
+        num_running = (get_num_files(directory, output_type, last_modified=True) +
+                       get_num_files(resubmits_dir, output_type, last_modified=True) +
+                       get_num_files(freq_calcs_dir, freq_output, last_modified=True))
 
     else:
         num_complete = get_num_files(completed_dir, output_type)
-        num_running = get_num_files(directory, output_type)
+        num_running = get_num_files(directory, output_type, last_modified=True)
 
     if dft:
         num_failed_opt = get_num_files(failed_opt_dir, output_type)
@@ -69,8 +69,14 @@ def get_prog(directory, num_mols, name, output_type=".log", dft=False, print=Tru
         print_formatted(print_format, row)
 
 
-def get_num_files(directory, output_type):
-    return len(glob.glob(os.path.join(directory, f"*{output_type}")))
+def get_num_files(directory, output_type, last_modified=False):
+    if last_modified:
+        all_files = glob.glob(os.path.join(directory, f"*{output_type}"))
+        difftime = time.time() - 60
+        recently_modified = [f for f in all_files if os.path.getmtime(f) >= difftime]
+        return len(recently_modified)
+    else:
+        return len(glob.glob(os.path.join(directory, f"*{output_type}")))
 
 
 def get_formatted_percentage(num, denom):

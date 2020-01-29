@@ -299,7 +299,7 @@ function submit_all_dft_opts {
 }
 
 # resubmits the jobs in the current directory
-# use: resubmit_array (no arguments, simply call from the workflow directory containing jobs you want to resubmit
+# use: resubmit_array (no arguments, simply call from the workflow directory containing jobs you want to resubmit)
 # effect: submits an array of jobs
 function resubmit_array {
 	source_config
@@ -378,6 +378,8 @@ function get_missing_input_files {
 		for file in *.pdb; do inchi="${file/.pdb/}"; bash $FLOW/scripts/make-com.sh -i=$file -r='#p M06/6-31+G(d,p) opt' -t=$inchi\_cat-rad_vac -l=$CAT_RAD_VAC -f; rm $file; done
     elif [[ "$curr_dir" == "$CAT_RAD_SOLV" ]]; then
 		for file in *.pdb; do inchi="${file/.pdb/}"; bash $FLOW/scripts/make-com.sh -i=$file -r='#p M06/6-31+G(d,p) SCRF=(Solvent=Acetonitrile) opt' -t=$inchi\_cat-rad_solv -c=1 -s=2 -l=$CAT_RAD_SOLV -f; rm $file; done
+	elif [[ "$curr_dir" == "$RM1_D" ]]; then
+		echo "UNSUPPORTED"
 	fi
 }
 

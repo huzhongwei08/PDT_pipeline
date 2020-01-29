@@ -14,7 +14,7 @@ current=1
 echo -e "\nCreating PM7 input files..."
 for file in *.pdb; do
 	progress_bar 100 0 $current $total_pdbs
-	bash $FLOW_TOOLS/scripts/make-com.sh -i=$file -r='#p pm7 opt' -l=$PM7 -f
+	bash $FLOW_TOOLS/scripts/make-com.sh -i=$file -r='#p pm7 opt' -c=$CHARGE_PDB -l=$PM7 -f
 	current=$((current + 1))
 done
 echo ""

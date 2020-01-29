@@ -4,7 +4,6 @@
 #SBATCH -e %A_%a.e	
 #SBATCH -N 1
 #SBATCH -n 14
-#SBATCH --reservation=lopez_new
 #SBATCH -p general
 #SBATCH --array=1-TOTAL%50
 #SBATCH --parsable
@@ -21,11 +20,15 @@ input_file=$(fetch_input $SLURM_ARRAY_TASK_ID g16_inp.txt)
 title="${input_file/.com/}"
 log=$title.log
 
-# check if job is already complete
-completed=$(already_done $log)
+# check if job is already complete or failed
+completed=$(job_finished $log)
+failed=$(job_failed $log "failed")
 
 # run job if incomplete
 if [[ $completed -eq 0 ]]; then
+	if [[ $failed -eq 1 ]]; then
+		make-com.sh -i="failed/$log" -r='#p pm7 opt=(recalcfc=4)' -f
+	fi
     # execute job
     timeout TIME time g16 $input_file
     timeout_status=$?
@@ -57,6 +60,13 @@ function fin_handler {
  
 	# make GAMESS RM1-D input
 	cd $PM7/opt_pdbs/
+        # --------------------------------------------
+        # Z. Hu, deal with charged molecule for GAMESS
+        if [ $CHARGE_PDB != 0 ]
+        then
+           sed -i '1 c\ $CONTRL RUNTYP=OPTIMIZE ICHARG='$CHARGE_PDB' DFTTYP=NONE EXETYP=RUN MAXIT=200 $END' $FLOW_TOOLS/templates/gamess_rm1d-opt.txt
+        fi
+        # --------------------------------------------
 	bash $FLOW_TOOLS/scripts/pdb2inp.sh $title.pdb $FLOW_TOOLS/templates/gamess_rm1d-opt.txt
 	mv $title.inp $RM1_D
 }
@@ -70,8 +80,8 @@ if [ $termination -eq 1 ]; then		# if the run terminated successfully
 
 else	
 	# setup and submit restart with calcfc
-	pm7_restart $input_file
-	time g16 $name
+	make-com.sh -i=$log -r='#p pm7 opt=(recalcfc=4)' -f
+	time g16 $input_file
 	
 	termination=$(grep 'Normal termination' $log | wc -l)
 	

@@ -4,7 +4,6 @@
 #SBATCH -e %A_%a.e
 #SBATCH -N 1
 #SBATCH -n 14
-#SBATCH --reservation=lopez_new
 #SBATCH -p general
 #SBATCH --array=1-TOTAL%50
 #SBATCH --parsable
@@ -27,7 +26,7 @@ rm $SCRATCH/gamess_scratch/scr/$title*
 
 
 # check if job is already complete
-completed=$(already_done $out)
+completed=$(job_finished $out)
 
 # run job if incomplete
 if [[ $completed -eq 0 ]]; then
@@ -56,7 +55,7 @@ if [ $termination -eq 1 ]; then		# if the run terminated successfully
 
 	# make SP-DFT .com input file
 	cd $RM1_D/opt_pdbs/
-	bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p M06/6-31+G(d,p)' -t=$title\_sp -l=$SP_DFT
+	bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p M06/6-31+G(d,p)' -c=$CHARGE_PDB -t=$title\_sp -l=$SP_DFT
 	exit 0	
 else
 	# move files to failed directory

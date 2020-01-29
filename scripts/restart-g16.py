@@ -54,7 +54,7 @@ def get_SCF_energies(log_file):
                 energies.append(float(line.split("=")[1].split('A.U.')[0].strip()))
     return energies
 
-# determines if the given log file is oscillating 
+# determines if the SCF energy is oscillating 
 def is_opt_oscillating(log_file):
     energy_diffs = np.diff(get_SCF_energies(log_file))
     energy_stdev = np.std(energy_diffs)
@@ -177,6 +177,15 @@ def clear_gau_files(log_file):
     except:
         pass
 
+
+cwd = os.getcwd()
+files = [file for file in sys.argv[1:] if file.endswith(".com")]
+com_files = []
+
+# only keep input files which also have log files in the same directory
+for file in files:
+    if os.path.exists(file.replace(".com", ".log")):
+        com_files.append(file)
 
 for com_file in com_files:
     log_file = com_file.replace(".com", ".log")

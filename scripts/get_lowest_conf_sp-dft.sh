@@ -7,6 +7,7 @@
 
 # molecule of interest
 mol=$1
+num_confs=$2
 declare -a confs=()
 declare -a energies=()
 
@@ -17,10 +18,15 @@ for conf in $mol*.log; do
 	energies+=($energy)
 done
 
-# get the index of the lowest energy
-min_index=$(echo "${energies[*]}" | tr ' ' '\n' | awk 'NR==1{min=$0}NR>1 && $1<min{min=$1;pos=NR}END{print pos}')
 
-# get the lowest energy conformer
-min_conf=${confs[$(($min_index - 1))]}
+if [[ $num_confs -eq "${#energies[@]}" ]]; then
+	# get the index of the lowest energy
+	min_index=$(echo "${energies[*]}" | tr ' ' '\n' | awk 'NR==1{min=$0}NR>1 && $1<min{min=$1;pos=NR}END{print pos}')
 
-echo "${min_conf/_sp.log/}"
+	# get the lowest energy conformer
+	min_conf=${confs[$(($min_index - 1))]}
+
+	echo "${min_conf/_sp.log/}"
+else
+	echo "-1"
+fi
