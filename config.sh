@@ -32,5 +32,5 @@ export TITLE=$(basename $MAIN_DIR)
 # -------------------------------------
 # Z. Hu, get the charge from PDB file
 cd $UNOPT_PDBS
-export CHARGE_PDB=$(charge_from_pdb.py)
+export CHARGE_PDB=$(python $FLOW_TOOLS/scripts/charge_from_pdb.py)
 # -------------------------------------
