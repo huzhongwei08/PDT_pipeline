@@ -4,7 +4,8 @@
 #SBATCH -e RM1-D_submitter.e
 #SBATCH -N 1
 #SBATCH -n 1
-#SBATCH -p general
+#SBATCH --reservation=lopez_amd
+#SBATCH --partition=reservation
 #SBATCH --parsable
 #SBATCH --dependency=afterany:PM7_ID
 

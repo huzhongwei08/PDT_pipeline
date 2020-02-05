@@ -4,7 +4,8 @@
 #SBATCH -e JOBNAME.e				
 #SBATCH -N 1	
 #SBATCH -n 14
-#SBATCH -p general
+#SBATCH --reservation=lopez_amd
+#SBATCH --partition=reservation
 #SBATCH --mail-user=EMAIL
 #SBATCH --mail-type=END
 #SBATCH --parsable

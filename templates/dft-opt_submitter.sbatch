@@ -4,7 +4,8 @@
 #SBATCH -e DFT-OPT_submitter.e
 #SBATCH -N 1
 #SBATCH -n 1
-#SBATCH -p general
+#SBATCH --reservation=lopez_amd
+#SBATCH --partition=reservation
 #SBATCH --parsable
 #SBATCH --dependency=afterany:S0_DFT_OPT_VAC_ID
 

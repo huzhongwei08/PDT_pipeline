@@ -4,7 +4,8 @@
 #SBATCH -e JOBNAME.err
 #SBATCH -N 1
 #SBATCH -n 1
-#SBATCH -p general
+#SBATCH --reservation=lopez_amd
+#SBATCH --partition=reservation
 #SBATCH --dependency=afterany:JOBID
 #SBATCH --mail-user=EMAIL
 #SBATCH --mail-type=END
