@@ -4,8 +4,8 @@
 #SBATCH -e SP-DFT_submitter.e
 #SBATCH -N 1
 #SBATCH -n 1
-#SBATCH --reservation=lopez_amd
-#SBATCH --partition=reservation
+#SBATCH --partition=lopez
+#SBATCH --constraint="ib"
 #SBATCH --parsable
 #SBATCH --dependency=afterany:RM1_ID
 

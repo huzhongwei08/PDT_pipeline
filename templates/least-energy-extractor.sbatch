@@ -4,8 +4,8 @@
 #SBATCH -e least-energy-extractor.e
 #SBATCH -N 1                                    
 #SBATCH -n 14
-#SBATCH --reservation=lopez_amd
-#SBATCH --partition=reservation
+#SBATCH --partition=lopez
+#SBATCH --constraint="ib"
 #SBATCH --mail-user=EMAIL
 #SBATCH --mail-type=END
 #SBATCH --parsable
