@@ -6,6 +6,7 @@
 #SBATCH -n 14
 #SBATCH --partition=lopez
 #SBATCH --constraint="ib"
+#SBATCH --time=24:00:00
 #SBATCH --mail-user=EMAIL
 #SBATCH --mail-type=END
 #SBATCH --parsable

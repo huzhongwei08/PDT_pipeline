@@ -6,6 +6,7 @@
 #SBATCH -n 1
 #SBATCH --partition=lopez
 #SBATCH --constraint="ib"
+#SBATCH --time=24:00:00
 #SBATCH --parsable
 #SBATCH --dependency=afterany:S0_DFT_OPT_VAC_ID
 
