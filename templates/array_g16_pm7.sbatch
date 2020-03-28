@@ -29,7 +29,7 @@ failed=$(job_failed $log "failed")
 # run job if incomplete
 if [[ $completed -eq 0 ]]; then
 	if [[ $failed -eq 1 ]]; then
-		make-com.sh -i="failed/$log" -r='#p pm7 opt=(recalcfc=4)' -f
+		bash $FLOW_TOOLS/scripts/make-com.sh -i="failed/$log" -r='#p pm7 opt=(recalcfc=4)' -f
 	fi
     # execute job
     timeout TIME time g16 $input_file
@@ -82,7 +82,7 @@ if [ $termination -eq 1 ]; then		# if the run terminated successfully
 
 else	
 	# setup and submit restart with calcfc
-	make-com.sh -i=$log -r='#p pm7 opt=(recalcfc=4)' -f
+	bash $FLOW_TOOLS/scripts/make-com.sh -i=$log -r='#p pm7 opt=(recalcfc=4)' -f
 	time g16 $input_file
 	
 	termination=$(grep 'Normal termination' $log | wc -l)
