@@ -39,7 +39,9 @@ for conf in $UNOPT_PDBS/*_0.pdb; do
 
 	# make single-point TD-DFT .com file and move to sp_td-dft directory
         # Z. Hu, PDT stage1, do 5 singlet and 5 triplet excited states
-	bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p M06/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Acetonitrile)' -c=$CHARGE_PDB -t=$name\_sp-tddft -l=$SP_TDDFT
+	#bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p M06/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Acetonitrile)' -c=$CHARGE_PDB -t=$name\_sp-tddft -l=$SP_TDDFT
+        # Z. Hu, use new functionals wB97XD and water as the solvent
+	bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water)' -c=$CHARGE_PDB -t=$name\_sp-tddft -l=$SP_TDDFT
 
         # Z. Hu, PDT stage1, skip this part at this moment as we want to do SP TDDFT right after RM1-D
         ## make DFT S0 optimization .com file and move to dft_opt_s0 directory
