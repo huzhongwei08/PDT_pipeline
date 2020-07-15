@@ -25,7 +25,10 @@ touch $SP_DFT/lowest-energy-conformers.txt
 
 for conf in $UNOPT_PDBS/*_0.pdb; do
 	name=$(echo $(basename $conf) | sed "s/_0.pdb//")
-	lowest=$(bash $FLOW_TOOLS/scripts/get_lowest_conf_sp-dft.sh $name 4)
+        # Z. Hu, include inchi_key for counting the number of conformers
+        inchi_key="${name:0:27}"
+        conf_num=$(find $UNOPT_PDBS -name $inchi_key*.pdb | wc -l)
+	lowest=$(bash $FLOW_TOOLS/scripts/get_lowest_conf_sp-dft.sh $name $conf_num)
 
     # do not create input files if all conformers are not optimized
     if [[ $lowest -eq -1 ]]; then
