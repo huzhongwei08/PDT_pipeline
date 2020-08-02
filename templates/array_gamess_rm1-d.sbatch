@@ -55,9 +55,13 @@ if [ $termination -eq 1 ]; then		# if the run terminated successfully
 	obabel -igam $title.o -opdb -O $title.pdb &>/dev/null
 	mv $title.pdb ../opt_pdbs
 
-	# make SP-DFT .com input file
+        # Z. Hu, include DFT optimization as PM7 and RM1-D might not be good enough
+        # make DFT S0 optimization .com file and move to dft_opt_s0 directory
 	cd $RM1_D/opt_pdbs/
-	bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p M06/6-31+G(d,p)' -c=$CHARGE_PDB -t=$title\_sp -l=$SP_DFT
+        bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p M06/6-31+G(d,p) opt' -c=$CHARGE_PDB -t=$title\_S0_vac -l=$S0_VAC
+	# make SP-DFT .com input file
+	#cd $RM1_D/opt_pdbs/
+	#bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p M06/6-31+G(d,p)' -c=$CHARGE_PDB -t=$title\_sp -l=$SP_DFT
 	exit 0	
 else
 	# move files to failed directory

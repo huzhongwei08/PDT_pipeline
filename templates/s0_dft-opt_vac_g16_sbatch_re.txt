@@ -45,13 +45,17 @@ elif [ $termination -eq 1 ]; then				# if the run completes successfully
 	obabel -i log $title.log -o pdb -O $inchi_key.pdb &>/dev/null
 	mv $inchi_key.pdb ../opt_pdbs/
 
+        # Z. Hu, no need to do this at this moment
 	# setup freq calc
-	setup_freq $log
+	#setup_freq $log
 	
+        # Z. Hu, update this to make SP-DFT .com input file 
 	# make DFT optimization input files
-	cd ../opt_pdbs/
-	bash $FLOW_TOOLS/scripts/prep_dft-opts_re.sh $inchi_key.pdb
-	submit_all_dft_opts $inchi_key
+	#cd ../opt_pdbs/
+	#bash $FLOW_TOOLS/scripts/prep_dft-opts_re.sh $inchi_key.pdb
+	#submit_all_dft_opts $inchi_key
+        cd $S0_VAC/opt_pdbs/
+        bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p M06/6-31+G(d,p)' -c=$CHARGE_PDB -t=$inchi_key\_sp -l=$SP_DFT
 	exit 0	
 
 else

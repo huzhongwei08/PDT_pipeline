@@ -38,7 +38,9 @@ for conf in $UNOPT_PDBS/*_0.pdb; do
 	output_file="$lowest\_sp.log"
 	to_all_logs $output_file
 	pdb=$lowest.pdb
-	cd $RM1_D/opt_pdbs/
+        # Z. Hu, update this to S0_VAC
+	#cd $RM1_D/opt_pdbs/
+	cd $S0_VAC/opt_pdbs/
 
 	# make single-point TD-DFT .com file and move to sp_td-dft directory
         # Z. Hu, PDT stage1, do 5 singlet and 5 triplet excited states

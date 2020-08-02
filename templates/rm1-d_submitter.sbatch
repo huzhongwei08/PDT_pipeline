@@ -21,4 +21,8 @@ RM1_ID=$(submit_array "$TITLE\_RM1-D" "gamess_inp.txt" "inp" $FLOW_TOOLS/templat
 wait
 
 # submits SP-DFT submitter which submits SP-DFT array after RM1-D array is complete
-sed "s/RM1_ID/$RM1_ID/g" $FLOW_TOOLS/templates/sp-dft_submitter.sbatch | sbatch
+#sed "s/RM1_ID/$RM1_ID/g" $FLOW_TOOLS/templates/sp-dft_submitter.sbatch | sbatch
+
+# Z. Hu, insert the DFT optimiztion step between RM1-D and SP-DFT
+# submits DFT-OPT-S0-VAC submitter which submits DFT-OPT-S0-VAC array after RM1-D array is complete
+sed "s/RM1_ID/$RM1_ID/g" $FLOW_TOOLS/templates/dft-opt-s0-vac_submitter.sbatch | sbatch

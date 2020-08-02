@@ -8,13 +8,17 @@
 #SBATCH --constraint=ib
 #SBATCH --time=24:00:00
 #SBATCH --parsable
-#SBATCH --dependency=afterany:RM1_ID
+## Z. Hu, now it is after DFT_OPT_S0_VAC_ID
+##SBATCH --dependency=afterany:RM1_ID
+#SBATCH --dependency=afterany:DFT_OPT_S0_VAC_ID
 
 # source config and function files
 source_config
 
 # this sbatch script does not run until the completion of the RM1-D array
+# Z. Hu, update this
 # submits SP-DFT array after RM1-D array is complete
+# submits SP-DFT array after DFT-OPT-S0-VAC array is complete
 cd $SP_DFT
 SP_DFT_ID=$(submit_array "$TITLE\_SP-DFT" "g16_inp.txt" "com" $FLOW_TOOLS/templates/array_g16_sp-dft.sbatch $DFT_TIME)
 
