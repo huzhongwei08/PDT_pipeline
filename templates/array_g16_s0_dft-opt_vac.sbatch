@@ -55,7 +55,6 @@ if [ $timeout_status -eq 124 ]; then		# if the run times out
 
 	# submit restart calc
 	restart_opt $title $FLOW_TOOLS/templates/s0_dft-opt_vac_g16_sbatch_re.txt
-
 	
 elif [ $termination -eq 1 ]; then		# if the run terminated successfully
 
@@ -65,15 +64,20 @@ elif [ $termination -eq 1 ]; then		# if the run terminated successfully
 	to_all_logs $log
 
 	# make pdb file of DFT optimized S0 (in vacuo) structure
-    obabel -i log $log -o pdb -O $inchi_key.pdb &>/dev/null
-    mv $inchi_key.pdb $S0_VAC/opt_pdbs/
+        obabel -i log $log -o pdb -O $inchi_key.pdb &>/dev/null
+        mv $inchi_key.pdb $S0_VAC/opt_pdbs/
 
-	# set up and submit freq calc
-	setup_freq $log
+	## set up and submit freq calc
+	#setup_freq $log
 
-	# make DFT optimization input files
-	cd $S0_VAC/opt_pdbs/
-	bash $FLOW_TOOLS/scripts/prep-dft-opts.sh $inchi_key.pdb
+	## make DFT optimization input files
+	#cd $S0_VAC/opt_pdbs/
+	#bash $FLOW_TOOLS/scripts/prep-dft-opts.sh $inchi_key.pdb
+
+        # Z. Hu, PDT, do 5 singlet and 5 triplet excited states, use new functionals wB97XD and water as the solvent
+        cd $S0_VAC/opt_pdbs/
+        bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water)' -c=$CHARGE_PDB -t=$title\_sp-tddft -l=$SP_TDDFT
+
 	exit 0
 else
 	# move files to failed_opt directory

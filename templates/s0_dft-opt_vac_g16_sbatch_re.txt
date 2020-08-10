@@ -40,23 +40,25 @@ elif [ $termination -eq 1 ]; then				# if the run completes successfully
 	cd ../completed/
 	to_all_logs $log
 
-
 	# make pdb file of DFT optimized S0 (in vacuo) structure
 	obabel -i log $title.log -o pdb -O $inchi_key.pdb &>/dev/null
 	mv $inchi_key.pdb ../opt_pdbs/
 
-	# setup freq calc
-	setup_freq $log
-	
-	# make DFT optimization input files
-	cd ../opt_pdbs/
-	bash $FLOW_TOOLS/scripts/prep_dft-opts_re.sh $inchi_key.pdb
-	submit_all_dft_opts $inchi_key
-	exit 0	
+	## setup freq calc
+	#setup_freq $log
+	#
+	## make DFT optimization input files
+	#cd ../opt_pdbs/
+	#bash $FLOW_TOOLS/scripts/prep_dft-opts_re.sh $inchi_key.pdb
+	#submit_all_dft_opts $inchi_key
 
+        # Z. Hu, PDT, do 5 singlet and 5 triplet excited states, use new functionals wB97XD and water as the solvent
+        cd ../opt_pdbs/
+        bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water)' -c=$CHARGE_PDB -t=$title\_sp-tddft -l=$SP_TDDFT
+
+	exit 0	
 else
-    # move files to failed directory
-    mv $title* ../failed/failed_opt/
+        # move files to failed directory
+        mv $title* ../failed/failed_opt/
 	exit 1
 fi
-
