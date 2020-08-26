@@ -48,7 +48,7 @@ for conf in $UNOPT_PDBS/*_0.pdb; do
 	#bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water)' -c=$CHARGE_PDB -t=$name\_sp-tddft -l=$SP_TDDFT
 
         # make DFT S0 optimization .com file and move to dft_opt_s0 directory
-	bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p M06/6-31+G(d,p) opt' -t=$name\_S0_vac -l=$S0_VAC
+	bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p M06/6-31+G(d,p) opt' -c=$CHARGE_PDB -t=$name\_S0_vac -l=$S0_VAC
 	
 	echo $lowest >> $SP_DFT/lowest-energy-conformers.txt 
 	cd $SP_DFT/completed/
