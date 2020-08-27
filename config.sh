@@ -21,6 +21,10 @@ export SP_TDDFT=$(readlink -e sp-tddft)
 export T1_SOLV=$(readlink -e t1_solv)
 export T1_SP_TDDFT=$(readlink -e t1_sp-tddft)
 export UNOPT_PDBS=$(readlink -e unopt_pdbs)
+# -----------------------------------
+# Z. Hu, spin-orbital coupling folder
+export SOC=$(readlink -e soc)
+# -----------------------------------
 
 # useful variables
 export DEFAULT_EMAIL="$USER@husky.neu.edu"

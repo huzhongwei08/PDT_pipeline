@@ -260,7 +260,7 @@ function setup_freq {
 	local new_route=$(echo $route | sed "s|$opt_keyword|freq=noraman|" | sed "s| geom=allcheck guess=read||")
 	
 	# setup freq job
-	bash $FLOW_TOOLS/scripts/make-com.sh -i="$log_file" -r="$new_route" -c="$CHARGE_PDB" -s="$mult" -t="$freq" -l="../freq_calcs/"
+	bash $FLOW_TOOLS/scripts/make-com.sh -i="$log_file" -r="$new_route" -c="$charge" -s="$mult" -t="$freq" -l="../freq_calcs/"
 	cd "../freq_calcs/"
 
 	# setup sbatch
