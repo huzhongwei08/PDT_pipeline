@@ -63,8 +63,7 @@ if [ -z $LOCATION ]; then LOCATION='.'; fi
 # build route card
 if [[ "$NOSAVE" == "ALL" ]]; then echo -e "%chk=$CHK\n%rwf=$RWF\n%NoSave" >> "$COM"
 elif [[ "$NOSAVE" == "RWF" ]]; then echo -e "%rwf=$RWF\n%NoSave\n%chk=$CHK" >> "$COM"
-elif [[ "$NOSAVE" == "CHK" ]]; then echo -e "%chk=$CHK\n%NoSave\n%rwf=$RWF" >> "$COM"
-elif [[ "$NOSAVE" == "FALSE" ]]; then echo -e "%chk=$CHK\n%rwf=$RWF" >> "$COM"; fi
+elif [[ "$NOSAVE" == "CHK" ]]; then echo -e "%chk=$CHK\n%NoSave\n%rwf=$RWF" >> "$COM"; fi
 echo "%mem=$MEM""GB" >> "$COM"
 echo "%nproc=$NPROC" >> "$COM"
 echo -e "$ROUTE\n" >> "$COM"

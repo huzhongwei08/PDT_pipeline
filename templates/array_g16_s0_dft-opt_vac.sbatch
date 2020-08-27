@@ -76,7 +76,7 @@ elif [ $termination -eq 1 ]; then		# if the run terminated successfully
 
         # Z. Hu, PDT, do 5 singlet and 5 triplet excited states, use new functionals wB97XD and water as the solvent
         cd $S0_VAC/opt_pdbs/
-        bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='FALSE' -t=$title\_sp-tddft -l=$SP_TDDFT 
+        bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft -l=$SP_TDDFT 
 
 	exit 0
 else
