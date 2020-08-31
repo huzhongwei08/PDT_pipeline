@@ -28,9 +28,14 @@ failed=$(job_failed $log "failed")
 
 # run job if incomplete
 if [[ $completed -eq 0 ]]; then
-	if [[ $failed -eq 1 ]]; then
-		bash $FLOW_TOOLS/scripts/make-com.sh -i="failed/$log" -r='#p pm7 opt=(recalcfc=4)' -c=$CHARGE_PDB -f
-	fi
+    if [[ $failed -eq 1 ]]; then
+        # -------------------------------------------------------------
+        # Z. Hu, obtain the charge for the failed job from the log 
+        CHARGE_redo=$(grep 'Charge =' "failed"/$log | awk '{print $3}')
+        # -------------------------------------------------------------
+    	bash $FLOW_TOOLS/scripts/make-com.sh -i="failed/$log" -r='#p pm7 opt=(recalcfc=4)' -c=$CHARGE_redo -f
+    fi
+
     # execute job
     timeout TIME time g16 $input_file
     timeout_status=$?
@@ -38,61 +43,62 @@ if [[ $completed -eq 0 ]]; then
     # rename .o and .e files
     rename_slurm_outputs $SLURM_ARRAY_TASK_ID $title
 
-	# termination status (successful if termination=1)
-	termination=$(grep 'Normal termination' $log | wc -l)
-	convergence_fail=$(grep 'Convergence failure' $log | wc -l)
+    # termination status (successful if termination=1)
+    termination=$(grep 'Normal termination' $log | wc -l)
+    convergence_fail=$(grep 'Convergence failure' $log | wc -l)
 else
-	# job already complete
-	termination=1
-	convergence_fail=0
+    # job already complete
+    termination=1
+    convergence_fail=0
     timeout_status=0
 fi
 
 # handle successful job completion
 function fin_handler {
-	title=$1	
-
-	# move files to completed directory
-	mv $title* $PM7/completed/
-	cd $PM7/completed/
- 
-	# make pdb file of PM7 optimized structure
-	obabel -ilog $log -opdb -O $title.pdb &>/dev/null
-	mv $title.pdb $PM7/opt_pdbs/
- 
-	# make GAMESS RM1-D input
-	cd $PM7/opt_pdbs/
-        # --------------------------------------------
-        # Z. Hu, deal with charged molecule for GAMESS
-        if [ $CHARGE_PDB != 0 ]
-        then
-           sed -i '1 c\ $CONTRL RUNTYP=OPTIMIZE ICHARG='$CHARGE_PDB' DFTTYP=NONE EXETYP=RUN MAXIT=200 $END' $FLOW_TOOLS/templates/gamess_rm1d-opt.txt
-        fi
-        # --------------------------------------------
-	bash $FLOW_TOOLS/scripts/pdb2inp.sh $title.pdb $FLOW_TOOLS/templates/gamess_rm1d-opt.txt
-	mv $title.inp $RM1_D
+    title=$1	
+    
+    # move files to completed directory
+    mv $title* $PM7/completed/
+    cd $PM7/completed/
+    
+    # make pdb file of PM7 optimized structure
+    obabel -ilog $log -opdb -O $title.pdb &>/dev/null
+    mv $title.pdb $PM7/opt_pdbs/
+    
+    # make GAMESS RM1-D input
+    cd $PM7/opt_pdbs/
+    bash $FLOW_TOOLS/scripts/pdb2inp.sh $title.pdb $FLOW_TOOLS/templates/gamess_rm1d-opt.txt
+    # -------------------------------------------------------------------------
+    # Z. Hu, deal with charged molecule for GAMESS
+    filename=$(basename $title.pdb)
+    CHARGE_PDB=$(python $FLOW_TOOLS/scripts/charge_from_pdb_each.py $UNOPT_PDBS/${filename:0:27}_0.pdb)
+    sed -i "s|#CHARGE#|$CHARGE_PDB|" $title.inp
+    # -------------------------------------------------------------------------
+    mv $title.inp $RM1_D
 }
 
 # end of job preparation for next submissions
 if [ $termination -eq 1 ]; then		# if the run terminated successfully
-	
-	# handle completion
-	fin_handler $title
-	exit 0
-
+    # handle completion
+    fin_handler $title
+    exit 0
 else	
-	# setup and submit restart with calcfc
-	bash $FLOW_TOOLS/scripts/make-com.sh -i=$log -r='#p pm7 opt=(recalcfc=4)' -c=$CHARGE_PDB -f
-	time g16 $input_file
-	
-	termination=$(grep 'Normal termination' $log | wc -l)
-	
-	if [ $termination -eq 1 ]; then         # if the run terminated successfully
-		fin_handler $title
-		exit 0
-	else
-	    # move files to failed directory
-    	mv $title* failed/
-    	exit 1
-	fi	
+    # setup and submit restart with calcfc
+    # ------------------------------------------------------------
+    # Z. Hu, obtain the charge for the unfinished job from the log 
+    CHARGE_redo=$(grep 'Charge =' $log | awk '{print $3}')
+    # ------------------------------------------------------------
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$log -r='#p pm7 opt=(recalcfc=4)' -c=$CHARGE_redo -f
+    time g16 $input_file
+    
+    termination=$(grep 'Normal termination' $log | wc -l)
+    
+    if [ $termination -eq 1 ]; then         # if the run terminated successfully
+        fin_handler $title
+        exit 0
+    else
+        # move files to failed directory
+        mv $title* failed/
+        exit 1
+    fi	
 fi

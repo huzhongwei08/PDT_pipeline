@@ -13,9 +13,13 @@ total_pdbs=$(ls -f *.pdb | wc -l)
 current=1
 echo -e "\nCreating PM7 input files..."
 for file in *.pdb; do
-	progress_bar 100 0 $current $total_pdbs
-	bash $FLOW_TOOLS/scripts/make-com.sh -i=$file -r='#p pm7 opt' -c=$CHARGE_PDB -l=$PM7 -f
-	current=$((current + 1))
+   progress_bar 100 0 $current $total_pdbs
+   # --------------------------------------------------------------------
+   # Z. Hu, obtain the charge for each PDB file
+   CHARGE_PDB=$(python $FLOW_TOOLS/scripts/charge_from_pdb_each.py $file)
+   # --------------------------------------------------------------------
+   bash $FLOW_TOOLS/scripts/make-com.sh -i=$file -r='#p pm7 opt' -c=$CHARGE_PDB -l=$PM7 -f
+   current=$((current + 1))
 done
 echo ""
 

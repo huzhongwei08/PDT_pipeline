@@ -39,48 +39,52 @@ if [[ $completed -eq 0 ]]; then
 
     # termination status (opt successful if termination=1, opt & freq successful if termination=2)
     termination=$(grep 'Normal termination' $log | wc -l)
-
 else
-	# job is already coplete
+    # job is already coplete
     timeout_status=0
     termination=1
 fi
 
 # end of job preparation for next submissions
 if [ $timeout_status -eq 124 ]; then		# if the run times out
-
-	# move files to timeouts directory
-	mv $title* $S0_VAC/resubmits/
-	cd $S0_VAC/resubmits/
-
-	# submit restart calc
-	restart_opt $title $FLOW_TOOLS/templates/s0_dft-opt_vac_g16_sbatch_re.txt
-	
+    # move files to timeouts directory
+    mv $title* $S0_VAC/resubmits/
+    cd $S0_VAC/resubmits/
+    
+    # submit restart calc
+    restart_opt $title $FLOW_TOOLS/templates/s0_dft-opt_vac_g16_sbatch_re.txt
 elif [ $termination -eq 1 ]; then		# if the run terminated successfully
-
-	# move files to completed directory
-	mv $title* $S0_VAC/completed/
-	cd $S0_VAC/completed/
-	to_all_logs $log
-
-	# make pdb file of DFT optimized S0 (in vacuo) structure
-        obabel -i log $log -o pdb -O $inchi_key.pdb &>/dev/null
-        mv $inchi_key.pdb $S0_VAC/opt_pdbs/
-
-	## set up and submit freq calc
-	#setup_freq $log
-
-	## make DFT optimization input files
-	#cd $S0_VAC/opt_pdbs/
-	#bash $FLOW_TOOLS/scripts/prep-dft-opts.sh $inchi_key.pdb
-
-        # Z. Hu, PDT, do 5 singlet and 5 triplet excited states, use new functionals wB97XD and water as the solvent
-        cd $S0_VAC/opt_pdbs/
-        bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft -l=$SP_TDDFT 
-
-	exit 0
+    # move files to completed directory
+    mv $title* $S0_VAC/completed/
+    cd $S0_VAC/completed/
+    to_all_logs $log
+    
+    # make pdb file of DFT optimized S0 (in vacuo) structure
+    obabel -i log $log -o pdb -O $inchi_key.pdb &>/dev/null
+    mv $inchi_key.pdb $S0_VAC/opt_pdbs/
+    
+    # -------------------------------------
+    # Z. Hu, skip vibrational freq for now
+    ## set up and submit freq calc
+    #setup_freq $log
+    # -------------------------------------
+    
+    # -----------------------------------------------------------------------------
+    # Z. Hu, obtain the charge for the PDB file
+    filename=$(basename $inchi_key.pdb)
+    CHARGE_PDB=$(python $FLOW_TOOLS/scripts/charge_from_pdb_each.py $UNOPT_PDBS/${filename:0:27}_0.pdb)
+    # -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------------------------
+    # Z. Hu, do 5 singlet and 5 triplet excited states, use new functionals wB97XD and water as the solvent
+    #        include keywords "6D 10F nosymm FGInput" for PySOC simulations after the SP-TDDFT step
+    #        ave the *rwf but not the *chk file for PySOC simulations (might need to rm as it is huge)
+    cd $S0_VAC/opt_pdbs/
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft -l=$SP_TDDFT 
+    # -----------------------------------------------------------------------------------------------------
+    
+    exit 0
 else
-	# move files to failed_opt directory
-	mv $title* failed_opt/
-	exit 1
+    # move files to failed_opt directory
+    mv $title* failed_opt/
+    exit 1
 fi

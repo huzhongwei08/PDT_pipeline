@@ -33,36 +33,40 @@ completed=$(job_finished $out)
 # run job if incomplete
 if [[ $completed -eq 0 ]]; then
     # execute job
-	time $FLOW/utils/rungms $input_file
+    time $FLOW/utils/rungms $input_file
 
     # rename .o and .e files
     rename_slurm_outputs $SLURM_ARRAY_TASK_ID $title
 	
-	termination=$(grep 'TERMINATED NORMALLY' $out | wc -l)
+    termination=$(grep 'TERMINATED NORMALLY' $out | wc -l)
 else
-	termination=1
+    termination=1
 fi
 
 # end of job preparation for next submissions
 if [ $termination -eq 1 ]; then		# if the run terminated successfully
-
-	# move files to completed directory and discard scratch files
-	mv $title* $RM1_D/completed/
-	rm $SCRATCH/gamess_scratch/scr/$title*
-	
-	# make pdb file of RM1-D optimized structure
-	cd $RM1_D/completed/
-	obabel -igam $title.o -opdb -O $title.pdb &>/dev/null
-	mv $title.pdb ../opt_pdbs
-
-	# make SP-DFT .com input file
-	cd $RM1_D/opt_pdbs/
-	bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p M06/6-31+G(d,p)' -c=$CHARGE_PDB -t=$title\_sp -l=$SP_DFT
-	exit 0	
+    # move files to completed directory and discard scratch files
+    mv $title* $RM1_D/completed/
+    rm $SCRATCH/gamess_scratch/scr/$title*
+    
+    # make pdb file of RM1-D optimized structure
+    cd $RM1_D/completed/
+    obabel -igam $title.o -opdb -O $title.pdb &>/dev/null
+    mv $title.pdb ../opt_pdbs
+    
+    # make SP-DFT .com input file
+    cd $RM1_D/opt_pdbs/
+    # -------------------------------------------------------------------------
+    # Z. Hu, obtain the charge for the PDB file
+    filename=$(basename $title.pdb)
+    CHARGE_PDB=$(python $FLOW_TOOLS/scripts/charge_from_pdb_each.py $UNOPT_PDBS/${filename:0:27}_0.pdb)
+    # -------------------------------------------------------------------------
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p M06/6-31+G(d,p)' -c=$CHARGE_PDB -t=$title\_sp -l=$SP_DFT
+    exit 0	
 else
-	# move files to failed directory
-	mv $title* $RM1_D/failed/
-	rm $SCRATCH/gamess_scratch/$title*
-	rm $SCRATCH/gamess_scratch/scr/$title*
-	exit 1
+    # move files to failed directory
+    mv $title* $RM1_D/failed/
+    rm $SCRATCH/gamess_scratch/$title*
+    rm $SCRATCH/gamess_scratch/scr/$title*
+    exit 1
 fi
