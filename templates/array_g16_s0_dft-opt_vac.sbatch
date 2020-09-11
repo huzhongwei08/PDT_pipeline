@@ -6,7 +6,7 @@
 #SBATCH -n 14               			
 #SBATCH --partition=lopez
 #SBATCH --constraint=ib
-#SBATCH --time=24:00:00
+#SBATCH --time=48:00:00
 #SBATCH --array=1-TOTAL%50 			
 #SBATCH --parsable
 

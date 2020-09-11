@@ -43,7 +43,11 @@ elif [ $termination -eq 1 ]; then               # if the run terminated successf
     mv $title* ../completed/
 	cd ../completed/
     to_all_logs $log
-    setup_freq $log
+    # ----------------------
+    # Z. Hu, skip it for now 
+    ## setup freq calc
+    #setup_freq $log
+    # ----------------------
     exit 0
 else
     # move files to failed directory
