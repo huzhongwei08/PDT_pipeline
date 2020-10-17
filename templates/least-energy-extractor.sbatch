@@ -4,7 +4,7 @@
 #SBATCH -e least-energy-extractor.e
 #SBATCH -N 1                                    
 #SBATCH -n 16
-#SBATCH --partition=short
+#SBATCH --partition=lopez
 #SBATCH --constraint=ib
 #SBATCH --time=24:00:00
 #SBATCH --mail-user=EMAIL

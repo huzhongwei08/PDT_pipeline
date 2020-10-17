@@ -4,7 +4,7 @@
 #SBATCH -e %A_%a.e				
 #SBATCH -N 1			
 #SBATCH -n 16               			
-#SBATCH --partition=short
+#SBATCH --partition=lopez
 #SBATCH --constraint=ib
 #SBATCH --time=48:00:00
 #SBATCH --array=1-TOTAL%50 			
@@ -79,7 +79,7 @@ elif [ $termination -eq 1 ]; then		# if the run terminated successfully
     #        include keywords "6D 10F nosymm FGInput" for PySOC simulations after the SP-TDDFT step
     #        ave the *rwf but not the *chk file for PySOC simulations (might need to rm as it is huge)
     cd $S0_VAC/opt_pdbs/
-    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft -l=$SP_TDDFT 
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=10, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft -l=$SP_TDDFT 
     # -----------------------------------------------------------------------------------------------------
     
     exit 0

@@ -4,7 +4,7 @@
 #SBATCH -e DFT-VEE_submitter.e
 #SBATCH -N 1
 #SBATCH -n 1
-#SBATCH --partition=short
+#SBATCH --partition=lopez
 #SBATCH --constraint=ib
 #SBATCH --time=24:00:00
 #SBATCH --parsable
