@@ -3,8 +3,8 @@
 #SBATCH -o JOBNAME.o
 #SBATCH -e JOBNAME.e				
 #SBATCH -N 1	
-#SBATCH -n 14
-#SBATCH --partition=lopez
+#SBATCH -n 16
+#SBATCH --partition=short
 #SBATCH --constraint=ib
 #SBATCH --time=24:00:00
 #SBATCH --mail-user=EMAIL
