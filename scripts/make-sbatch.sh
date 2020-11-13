@@ -50,7 +50,7 @@ fi
 # other defaults
 if [ -z "$PARTITION" ]; then PARTITION='general'; fi
 if [ -z "$NODES" ]; then NODES=1; fi
-if [ -z "$CORES" ]; then CORES=14; fi
+if [ -z "$CORES" ]; then CORES=16; fi
 if [ -z "$LOCATION" ]; then LOCATION='.'; fi
 if [ -z "$MAILTYPE" ]; then MAILTYPE='END'; fi
 if [ -z "$SUBMIT" ]; then SUBMIT=0; fi

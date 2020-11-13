@@ -2,7 +2,7 @@
 #SBATCH --job-name=JOBNAME
 #SBATCH --output=JOBNAME.o
 #SBATCH --error=JOBNAME.e
-#SBATCH -n 14
+#SBATCH -n 16
 #SBATCH -N 1
 #SBATCH --partition=short
 #SBATCH --constraint=ib

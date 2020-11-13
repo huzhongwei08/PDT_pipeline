@@ -50,7 +50,7 @@ else
 fi
 
 # defaults
-if [ -z "$NPROC" ]; then NPROC=14; fi
+if [ -z "$NPROC" ]; then NPROC=16; fi
 if [ -z "$MEM" ]; then MEM=8; fi
 if [ -z "$CHARGE" ]; then CHARGE=0; fi
 if [ -z "$MULT" ]; then MULT=1; fi
