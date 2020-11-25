@@ -164,7 +164,12 @@ for smile in tqdm(all_smiles, desc="Generating conformers..."):
         good_conformers.append(smile)
 
     # optimize conformers
-    AllChem.UFFOptimizeMoleculeConfs(mol, numThreads=0)
+    try:
+        # 'MMFF94'
+        AllChem.MMFFOptimizeMoleculeConfs(mol, numThreads=0)
+    except:
+        # 'UFF'
+        AllChem.UFFOptimizeMoleculeConfs(mol, numThreads=0)
 
     # write conformers to PDB files
     inchi_key = Chem.InchiToInchiKey(Chem.MolToInchi(mol))
