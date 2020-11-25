@@ -61,7 +61,8 @@ if [ $termination -eq 1 ]; then		# if the run terminated successfully
     filename=$(basename $title.pdb)
     CHARGE_PDB=$(python $FLOW_TOOLS/scripts/charge_from_pdb_each.py $UNOPT_PDBS/${filename:0:27}_0.pdb)
     # -------------------------------------------------------------------------
-    bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p M06/6-31+G(d,p)' -c=$CHARGE_PDB -t=$title\_sp -l=$SP_DFT
+    # Z. Hu, 11/24/2020, switch M06 to B3LYP for SP_DFT
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p B3LYP/6-31+G(d,p)' -c=$CHARGE_PDB -t=$title\_sp -l=$SP_DFT
     exit 0	
 else
     # move files to failed directory

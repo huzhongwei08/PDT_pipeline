@@ -78,8 +78,9 @@ elif [ $termination -eq 1 ]; then		# if the run terminated successfully
     # Z. Hu, do 5 singlet and 5 triplet excited states, use new functionals wB97XD and water as the solvent
     #        include keywords "6D 10F nosymm FGInput" for PySOC simulations after the SP-TDDFT step
     #        ave the *rwf but not the *chk file for PySOC simulations (might need to rm as it is huge)
+    # Z. Hu, 11/24/2020, switch to B3LYP as no experimental calibration
     cd $S0_VAC/opt_pdbs/
-    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=10, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft -l=$SP_TDDFT 
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p B3LYP/6-31+G(d,p) td=(NStates=10, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft -l=$SP_TDDFT 
     # -----------------------------------------------------------------------------------------------------
     
     exit 0

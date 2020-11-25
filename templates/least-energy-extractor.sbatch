@@ -49,7 +49,8 @@ for conf in $UNOPT_PDBS/*_0.pdb; do
     # -------------------------------------------------------------------
     # -----------------------------------------------------------------------------------------------------------------
     # Z. Hu, make DFT S0 optimization .com file and move to dft_opt_s0 directory
-    bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p M06/6-31+G(d,p) opt' -c=$CHARGE_PDB -t=$name\_S0_vac -l=$S0_VAC
+    # Z. Hu, 11/24/2020, switch M06 to B3LYP for S0_VAC
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p B3LYP/6-31G(d) opt' -c=$CHARGE_PDB -t=$name\_S0_vac -l=$S0_VAC
     # -----------------------------------------------------------------------------------------------------------------
     
     echo $lowest >> $SP_DFT/lowest-energy-conformers.txt 
