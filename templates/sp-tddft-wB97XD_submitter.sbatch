@@ -8,7 +8,7 @@
 #SBATCH --constraint=ib
 #SBATCH --time=24:00:00
 #SBATCH --parsable
-#SBATCH --dependency=afterany:S0_DFT_OPT_VAC_ID
+#SBATCH --dependency=afterany:SP_TDDFT_ID
 
 # source config and function files
 source_config
@@ -17,12 +17,9 @@ source_config
 # submits SP-TDDFT array after S0_DFT_OPT_VAC array is complete
 # Z. Hu, 12/12/2020, do both B3LYP and wB97XD
 # B3LYP
-cd $SP_TDDFT/b3lyp
-SP_TDDFT_ID=$(submit_array "$TITLE\_SP-TDDFT" "g16_inp.txt" "com" $FLOW_TOOLS/templates/array_g16_sp_td-dft.sbatch $DFT_TIME)
+cd $SP_TDDFT/wb97xd
+SP_TDDFT_wB97XD_ID=$(submit_array "$TITLE\_SP-TDDFT" "g16_inp.txt" "com" $FLOW_TOOLS/templates/array_g16_sp_td-dft.sbatch $DFT_TIME)
 wait
 
-# submits SP-TDDFT(wBXD97) submitter which submits SP-TDDFT(wBXD97) array after SP-TDDFT(B3LYP) array is complete
-sed "s/SP_TDDFT_ID/$SP_TDDFT_ID/g" $FLOW_TOOLS/templates/sp-tddft-wB97XD_submitter.sbatch | sbatch
-
 # submits PYSOC submitter which submits PYSOC array after SP-TDDFT array is complete
-#sed "s/SP_TDDFT_ID/$SP_TDDFT_ID/g" $FLOW_TOOLS/templates/soc_submitter.sbatch | sbatch
+sed "s/SP_TDDFT_wB97XD_ID/$SP_TDDFT_wB97XD_ID/g" $FLOW_TOOLS/templates/soc_submitter.sbatch | sbatch

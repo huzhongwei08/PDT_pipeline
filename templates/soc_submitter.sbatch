@@ -8,7 +8,7 @@
 #SBATCH --constraint=ib
 #SBATCH --time=24:00:00
 #SBATCH --parsable
-#SBATCH --dependency=afterany:SP_TDDFT_ID
+#SBATCH --dependency=afterany:SP_TDDFT_wB97XD_ID
 
 # source config and function files
 source_config
