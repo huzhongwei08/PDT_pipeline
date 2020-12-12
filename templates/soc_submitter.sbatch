@@ -15,15 +15,15 @@ source_config
 
 # this sbatch script does not run until the completion of the SP_TDDFT array
 # Make a folder for each molecule/inchikey and perform PySOC
-cd $SOC
 # Z. Hu, 12/12/2020, do both B3LYP and wB97XD
+cd $SOC
 # B3LYP
 for file in $SP_TDDFT/b3lyp/completed/*.rwf; do
     name=$(echo $(basename $file) | sed "s/.rwf//")
     inchi_key="${name:0:27}"
 
-    mkdir -p $inchi_key
-    cd $inchi_key
+    mkdir -p b3lyp/$inchi_key
+    cd b3lyp/$inchi_key
 
     cp $SP_TDDFT/b3lyp/completed/${name}.log .
     mv $SP_TDDFT/b3lyp/completed/${name}.rwf .
@@ -55,13 +55,15 @@ for file in $SP_TDDFT/b3lyp/completed/*.rwf; do
 
     cd $SOC
 done
+
+cd $SOC
 # wB97XD
 for file in $SP_TDDFT/wb97xd/completed/*.rwf; do
     name=$(echo $(basename $file) | sed "s/.rwf//")
     inchi_key="${name:0:27}"
 
-    mkdir -p $inchi_key
-    cd $inchi_key
+    mkdir -p wb97xd/$inchi_key
+    cd wb97xd/$inchi_key
 
     cp $SP_TDDFT/wb97xd/completed/${name}.log .
     mv $SP_TDDFT/wb97xd/completed/${name}.rwf .
