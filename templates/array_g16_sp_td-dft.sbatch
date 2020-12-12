@@ -35,11 +35,14 @@ termination=$(grep 'Normal termination' $log | wc -l)
 if [ $termination -eq 1 ]; then		# if the run terminated successfully
 
 	# move files to completed directory
-	mv $title* $SP_TDDFT/completed/
-	cd $SP_TDDFT/completed/ && to_all_logs $log
+	#mv $title* $SP_TDDFT/completed/
+	#cd $SP_TDDFT/completed/ && to_all_logs $log
+	mv $title* completed/
+	cd completed/ && to_all_logs $log
 	exit 0
 else	
 	# move files to failed directory
-	mv $title* $SP_TDDFT/failed/
+	#mv $title* $SP_TDDFT/failed/
+	mv $title* failed/
 	exit 1
 fi

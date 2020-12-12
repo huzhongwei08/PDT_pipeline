@@ -80,7 +80,11 @@ elif [ $termination -eq 1 ]; then		# if the run terminated successfully
     #        ave the *rwf but not the *chk file for PySOC simulations (might need to rm as it is huge)
     # Z. Hu, 11/24/2020, switch to B3LYP as no experimental calibration
     cd $S0_VAC/opt_pdbs/
-    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p B3LYP/6-31+G(d,p) td=(NStates=10, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft -l=$SP_TDDFT 
+    # Z. Hu, 12/12/2020, do both B3LYP and wB97XD
+    # B3LYP
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p B3LYP/6-31+G(d,p) td=(NStates=10, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft-b3lyp -l=$SP_TDDFT/b3lyp 
+    # wB97XD
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=10, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft-wb97xd -l=$SP_TDDFT/wb97xd 
     # -----------------------------------------------------------------------------------------------------
     
     exit 0
