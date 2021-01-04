@@ -53,6 +53,9 @@ for file in $SP_TDDFT/b3lyp/completed/*.rwf; do
     # Run the soc_td
     $FLOW_TOOLS/pysoc/soc_td
 
+    # Clean UP
+    rm -v !("init.py"|"soc_out.dat")      
+
     cd $SOC
 done
 
@@ -92,6 +95,9 @@ for file in $SP_TDDFT/wb97xd/completed/*.rwf; do
     
     # Run the soc_td
     $FLOW_TOOLS/pysoc/soc_td
+
+    # Clean UP
+    rm -v !("init.py"|"soc_out.dat")      
 
     cd $SOC
 done
