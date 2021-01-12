@@ -10,6 +10,9 @@
 #SBATCH --parsable
 #SBATCH --dependency=afterany:SP_TDDFT_wB97XD_ID
 
+# Not to disturb SBATCH format
+shopt -s extglob # enable extglob; needed for bash
+
 # source config and function files
 source_config
 
