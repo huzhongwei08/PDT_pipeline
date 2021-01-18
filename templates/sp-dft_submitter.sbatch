@@ -24,5 +24,7 @@ LEE_ID=$(sed "s/SP_DFT_ID/$SP_DFT_ID/" $FLOW_TOOLS/templates/least-energy-extrac
 wait
 
 # submit VEE and S0 DFT optimization submitter
-cd $MAIN_DIR
+# Z. Hu, 01/12/2021 make this more clear
+# submit VEE submitter that submits S0 DFT optimization, SP-DFT in solvent, and SP-TDDFT with two different XC functionals
+#cd $MAIN_DIR
 sed "s/LEE_ID/$LEE_ID/g" $FLOW_TOOLS/templates/dft-vee_submitter.sbatch | sbatch

@@ -85,6 +85,10 @@ elif [ $termination -eq 1 ]; then		# if the run terminated successfully
     bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p B3LYP/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft-b3lyp -l=$SP_TDDFT/b3lyp 
     # wB97XD
     bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft-wb97xd -l=$SP_TDDFT/wb97xd 
+    # Z. Hu, 01/12/2020, do single point DFT in solvent for orbital overlap comparison
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p B3LYP/6-31+G(d,p) SCRF=(Solvent=Water)' -c=$CHARGE_PDB -ns='RWF' -t=$title\_sp-dft-solv -l=$SP_DFT/solv 
+    # Z. Hu, 01/14/2020, do equation-of-motion coupled cluster single-double in solvent for negative S1-T1 gap
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p EOMCCSD(NStates=10,EnergyOnly,Singlets,Triplets)/6-31+G(d,p) SCRF=(Solvent=Water)' -c=$CHARGE_PDB -t=$title\_eom-ccsd-solv -l=$EOM_CCSD 
     # -----------------------------------------------------------------------------------------------------
     
     exit 0

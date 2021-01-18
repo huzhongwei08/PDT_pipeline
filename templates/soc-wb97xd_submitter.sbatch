@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -J SOC_submitter
-#SBATCH -o SOC_submitter.o
-#SBATCH -e SOC_submitter.e
+#SBATCH -J SOC_wB97XD_submitter
+#SBATCH -o SOC_wB97XD_submitter.o
+#SBATCH -e SOC_wB97XD_submitter.e
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH --partition=short
@@ -9,7 +9,7 @@
 #SBATCH --time=24:00:00
 #SBATCH --mem=16GB
 #SBATCH --parsable
-#SBATCH --dependency=afterany:SP_TDDFT_ID
+#SBATCH --dependency=afterany:SP_TDDFT_wB97XD_ID
 
 # Not to disturb SBATCH format
 shopt -s extglob # enable extglob; needed for bash
@@ -22,16 +22,16 @@ source_config
 # Z. Hu, 12/12/2020, do both B3LYP and wB97XD
 # Z. Hu, 01/12/2012, do B3LYP and wB97XD separately
 cd $SOC
-# B3LYP
-for file in $SP_TDDFT/b3lyp/completed/*.rwf; do
+# wB97XD
+for file in $SP_TDDFT/wb97xd/completed/*.rwf; do
     name=$(echo $(basename $file) | sed "s/.rwf//")
     inchi_key="${name:0:27}"
 
-    mkdir -p b3lyp/$inchi_key
-    cd b3lyp/$inchi_key
+    mkdir -p wb97xd/$inchi_key
+    cd wb97xd/$inchi_key
 
-    cp $SP_TDDFT/b3lyp/completed/${name}.log .
-    mv $SP_TDDFT/b3lyp/completed/${name}.rwf .
+    cp $SP_TDDFT/wb97xd/completed/${name}.log .
+    mv $SP_TDDFT/wb97xd/completed/${name}.rwf .
 
     cp $FLOW_TOOLS/pysoc/init_orig.py init.py
 

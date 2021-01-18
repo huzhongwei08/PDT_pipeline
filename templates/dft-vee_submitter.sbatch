@@ -22,5 +22,17 @@ S0_DFT_OPT_VAC_ID=$(submit_array "$TITLE\_S0_VAC" "g16_inp.txt" "com" $FLOW_TOOL
 wait
 
 # Z. Hu, PDT, submit single-point TD-DFT submitter
-cd $MAIN_DIR
+cd $SP_TDDFT
 sed "s/S0_DFT_OPT_VAC_ID/$S0_DFT_OPT_VAC_ID/g" $FLOW_TOOLS/templates/sp-tddft_submitter.sbatch | sbatch
+
+# Z. Hu, 01/12/2021, submit singlet-point TD-DFT wB97XD submitter in parallel with the B3LYP one
+cd $SP_TDDFT
+sed "s/S0_DFT_OPT_VAC_ID/$S0_DFT_OPT_VAC_ID/g" $FLOW_TOOLS/templates/sp-tddft-wb97xd_submitter.sbatch | sbatch
+
+# Z. Hu, 01/12/2021, do single point DFT in solvent using B3LYP
+cd $SP_DFT/solv
+sed "s/S0_DFT_OPT_VAC_ID/$S0_DFT_OPT_VAC_ID/g" $FLOW_TOOLS/templates/sp-dft-solv_submitter.sbatch | sbatch
+
+# Z. Hu, 01/12/2021, do EOM-CCSD
+cd $EOM_CCSD
+sed "s/S0_DFT_OPT_VAC_ID/$S0_DFT_OPT_VAC_ID/g" $FLOW_TOOLS/templates/eom-ccsd-solv_submitter.sbatch | sbatch

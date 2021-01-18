@@ -25,6 +25,14 @@ export UNOPT_PDBS=$(readlink -e unopt_pdbs)
 # Z. Hu, spin-orbital coupling folder
 export SOC=$(readlink -e soc)
 # -----------------------------------
+# -----------------------------------------
+# Z. Hu, molecular orbital overlap
+export MO_OVERLAP=$(readlink -e mo_overlap)
+# -----------------------------------------
+# -----------------------------------------
+# Z. Hu, molecular orbital overlap
+export EOM_CCSD=$(readlink -e eom_ccsd)
+# -----------------------------------------
 
 # useful variables
 export DEFAULT_EMAIL="$USER@husky.neu.edu"
