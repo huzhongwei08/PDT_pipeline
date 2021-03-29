@@ -11,7 +11,7 @@
 #SBATCH --mail-type=END
 #SBATCH --parsable
 
-# Script for S0 DFT optimization (in vacuo) restart
+# Script for S0 DFT optimization (in solvent) restart
 
 # source config and function files
 source_config
@@ -21,7 +21,7 @@ gen_slurm_report
 #name of molecule and out/err files
 title='JOBNAME'
 log=$title.log
-inchi_key="${title/_S0_vac/}"
+inchi_key="${title/_s0-dft-opt-solv/}"
 
 # execute job
 timeout TIME time g16 $title.com
@@ -40,7 +40,7 @@ elif [ $termination -eq 1 ]; then				# if the run completes successfully
     cd ../completed/
     to_all_logs $log
     
-    # make pdb file of DFT optimized S0 (in vacuo) structure
+    # make pdb file of DFT optimized S0 (in solvent) structure
     obabel -i log $title.log -o pdb -O $inchi_key.pdb &>/dev/null
     mv $inchi_key.pdb ../opt_pdbs/
     
@@ -55,18 +55,20 @@ elif [ $termination -eq 1 ]; then				# if the run completes successfully
     filename=$(basename $inchi_key.pdb) 
     CHARGE_PDB=$(python $FLOW_TOOLS/scripts/charge_from_pdb_each.py $UNOPT_PDBS/${filename:0:27}_0.pdb)
     # -----------------------------------------------------------------------------
-    # -----------------------------------------------------------------------------------------------------
-    # Z. Hu, do 5 singlet and 5 triplet excited states, use new functionals wB97XD and water as the solvent
-    #        include keywords "6D 10F nosymm FGInput" for PySOC simulations after the SP-TDDFT step
-    #        ave the *rwf but not the *chk file for PySOC simulations (might need to rm as it is huge)
-    # Z. Hu, 11/24/2020, switch to B3LYP as no experimental calibration
-    cd ../opt_pdbs/
-    # Z. Hu, 12/12/2020, do both B3LYP and wB97XD
-    # B3LYP
-    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p B3LYP/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft-b3lyp -l=$SP_TDDFT/b3lyp
-    # wB97XD
-    bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft-wb97xd -l=$SP_TDDFT/wb97xd
-    # -----------------------------------------------------------------------------------------------------
+    ## -----------------------------------------------------------------------------------------------------
+    ## Z. Hu, do 5 singlet and 5 triplet excited states, use new functionals wB97XD and water as the solvent
+    ##        include keywords "6D 10F nosymm FGInput" for PySOC simulations after the SP-TDDFT step
+    ##        ave the *rwf but not the *chk file for PySOC simulations (might need to rm as it is huge)
+    ## Z. Hu, 11/24/2020, switch to B3LYP as no experimental calibration
+    #cd ../opt_pdbs/
+    cd $S0_DFT_OPT_SOLV/opt_pdbs/
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p B3LYP/6-31+G(d,p) SCRF=(Solvent=Water)' -c=$CHARGE_PDB -t=$title\_sp-dft-solv -l=$SP_DFT_SOLV
+    ## Z. Hu, 12/12/2020, do both B3LYP and wB97XD
+    ## B3LYP
+    #bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p B3LYP/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft-b3lyp -l=$SP_TDDFT/b3lyp
+    ## wB97XD
+    #bash $FLOW_TOOLS/scripts/make-com.sh -i=$inchi_key.pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$title\_sp-tddft-wb97xd -l=$SP_TDDFT/wb97xd
+    ## -----------------------------------------------------------------------------------------------------
     
     exit 0	
 else

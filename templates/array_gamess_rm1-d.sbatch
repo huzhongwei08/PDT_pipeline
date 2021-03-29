@@ -54,7 +54,8 @@ if [ $termination -eq 1 ]; then		# if the run terminated successfully
     obabel -igam $title.o -opdb -O $title.pdb &>/dev/null
     mv $title.pdb ../opt_pdbs
     
-    # make SP-DFT .com input file
+    # Z. Hu, 03/27/2021, do S0-DFT-OPT-SOLV after RM1-D
+    # make S0-DFT-OPT-SOLV .com input file
     cd $RM1_D/opt_pdbs/
     # -------------------------------------------------------------------------
     # Z. Hu, obtain the charge for the PDB file
@@ -62,7 +63,8 @@ if [ $termination -eq 1 ]; then		# if the run terminated successfully
     CHARGE_PDB=$(python $FLOW_TOOLS/scripts/charge_from_pdb_each.py $UNOPT_PDBS/${filename:0:27}_0.pdb)
     # -------------------------------------------------------------------------
     # Z. Hu, 11/24/2020, switch M06 to B3LYP for SP_DFT
-    bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p B3LYP/6-31+G(d,p)' -c=$CHARGE_PDB -t=$title\_sp -l=$SP_DFT
+    # Z. Hu, 03/27/2021, do S0-DFT-OPT-SOLV after RM1-D using 6-31G(d) 
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$title.pdb -r='#p B3LYP/6-31G(d) opt SCRF=(Solvent=Water)' -c=$CHARGE_PDB -t=$title\_s0-dft-opt-solv -l=$S0_DFT_OPT_SOLV
     exit 0	
 else
     # move files to failed directory

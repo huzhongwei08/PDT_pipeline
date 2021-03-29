@@ -16,23 +16,21 @@ source_config
 gen_slurm_report
 
 # Z. Hu, this sbatch script does not run until the completion of the LEE array
-# submit S0 DFT optimization array (in vacuo)
-cd $S0_VAC
-S0_DFT_OPT_VAC_ID=$(submit_array "$TITLE\_S0_VAC" "g16_inp.txt" "com" $FLOW_TOOLS/templates/array_g16_s0_dft-opt_vac.sbatch $DFT_TIME)
-wait
+# submits single-point TDDFT B3LYP and wB97XD arrays
+# B3LYP
+cd $SP_TDDFT/b3lyp
+SP_TDDFT_B3LYP_ID=$(submit_array "$TITLE\_SP-TDDFT-B3LYP" "g16_inp.txt" "com" $FLOW_TOOLS/templates/array_g16_sp-tddft-solv.sbatch $DFT_TIME)
+# wB97XD
+cd $SP_TDDFT/wb97xd
+SP_TDDFT_wB97XD_ID=$(submit_array "$TITLE\_SP-TDDFT-wB97XD" "g16_inp.txt" "com" $FLOW_TOOLS/templates/array_g16_sp-tddft-solv.sbatch $DFT_TIME)
 
-# Z. Hu, PDT, submit single-point TD-DFT submitter
-cd $SP_TDDFT
-sed "s/S0_DFT_OPT_VAC_ID/$S0_DFT_OPT_VAC_ID/g" $FLOW_TOOLS/templates/sp-tddft_submitter.sbatch | sbatch
+# submits PYSOC B3LYP and wB97XD submitters which submit PYSOC jobs after SP-TDDFT-B3LYP/wB97XD arrays are complete
+cd $SOC
+# B3LYP
+sed "s/SP_TDDFT_B3LYP_ID/$SP_TDDFT_B3LYP_ID/g" $FLOW_TOOLS/templates/soc-b3lyp_submitter.sbatch | sbatch
+# wB97XD
+sed "s/SP_TDDFT_wB97XD_ID/$SP_TDDFT_wB97XD_ID/g" $FLOW_TOOLS/templates/soc-wb97xd_submitter.sbatch | sbatch
 
-# Z. Hu, 01/12/2021, submit singlet-point TD-DFT wB97XD submitter in parallel with the B3LYP one
-cd $SP_TDDFT
-sed "s/S0_DFT_OPT_VAC_ID/$S0_DFT_OPT_VAC_ID/g" $FLOW_TOOLS/templates/sp-tddft-wb97xd_submitter.sbatch | sbatch
-
-# Z. Hu, 01/12/2021, do single point DFT in solvent using B3LYP
-cd $SP_DFT/solv
-sed "s/S0_DFT_OPT_VAC_ID/$S0_DFT_OPT_VAC_ID/g" $FLOW_TOOLS/templates/sp-dft-solv_submitter.sbatch | sbatch
-
-# Z. Hu, 01/12/2021, do EOM-CCSD
-cd $EOM_CCSD
-sed "s/S0_DFT_OPT_VAC_ID/$S0_DFT_OPT_VAC_ID/g" $FLOW_TOOLS/templates/eom-ccsd-solv_submitter.sbatch | sbatch
+# submits MO_OVERLAP submitter which submits MO_OVERLAP tasks
+cd $MO_OVERLAP
+sbatch $FLOW_TOOLS/templates/mo_overlap_submitter.sbatch

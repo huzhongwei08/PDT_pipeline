@@ -40,11 +40,11 @@ fi
 # end of job preparation for next submissions
 if [ $termination -ge 1 ]; then		# if the run terminated successfully
     # move files to completed directory
-    mv $title* $SP_DFT/solv/completed/
-    cd $SP_DFT/solv/completed/ && to-all-logs $log
+    mv $title* $SP_DFT_SOLV/completed/
+    cd $SP_DFT_SOLV/completed/ && to-all-logs $log
     exit 0
 else					# if the run fails
     # move files to failed directory
-    mv $title* $SP_DFT/solv/failed/
+    mv $title* $SP_DFT_SOLV/failed/
     exit 1
 fi

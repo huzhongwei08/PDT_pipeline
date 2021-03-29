@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -J SOC_submitter
-#SBATCH -o SOC_submitter.o
-#SBATCH -e SOC_submitter.e
+#SBATCH -J SOC_B3LYP_submitter
+#SBATCH -o SOC_B3LYP_submitter.o
+#SBATCH -e SOC_B3LYP_submitter.e
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH --partition=short
@@ -9,7 +9,7 @@
 #SBATCH --time=24:00:00
 #SBATCH --mem=16GB
 #SBATCH --parsable
-#SBATCH --dependency=afterany:SP_TDDFT_ID
+#SBATCH --dependency=afterany:SP_TDDFT_B3LYP_ID
 
 # Not to disturb SBATCH format
 shopt -s extglob # enable extglob; needed for bash

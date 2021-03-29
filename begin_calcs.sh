@@ -29,7 +29,7 @@ PM7_ID=$(submit_array "$TITLE\_PM7" "g16_inp.txt" "com" "$FLOW_TOOLS/templates/a
 echo "PM7 array submitted with job ID $PM7_ID"
 
 # submit RM1-D submitter which submits after PM7 array completes
-cd $RM1_D
+#cd $RM1_D
 RM1_ID=$(sed "s/PM7_ID/$PM7_ID/g" "$FLOW_TOOLS/templates/rm1-d_submitter.sbatch" | sbatch)
 echo -e "RM1-D_submitter queued with job ID $RM1_ID\n"
 

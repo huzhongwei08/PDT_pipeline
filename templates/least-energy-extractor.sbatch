@@ -10,17 +10,17 @@
 #SBATCH --mail-user=EMAIL
 #SBATCH --mail-type=END
 #SBATCH --parsable
-#SBATCH --dependency=afterany:SP_DFT_ID
+#SBATCH --dependency=afterany:SP_DFT_SOLV_ID
 
 # source config and function files
 source_config
 
 gen_slurm_report
 
-cd $SP_DFT/completed/
+cd $SP_DFT_SOLV/completed/
 
-rm $SP_DFT/lowest-energy-conformers.txt
-touch $SP_DFT/lowest-energy-conformers.txt
+rm $SP_DFT_SOLV/lowest-energy-conformers.txt
+touch $SP_DFT_SOLV/lowest-energy-conformers.txt
 
 
 for conf in $UNOPT_PDBS/*_0.pdb; do
@@ -37,10 +37,13 @@ for conf in $UNOPT_PDBS/*_0.pdb; do
         continue
     fi
 
-    output_file="$lowest\_sp.log"
+    #output_file="$lowest\_sp.log"
+    output_file="$lowest"
     to_all_logs $output_file
-    pdb=$lowest.pdb
-    cd $RM1_D/opt_pdbs/
+    #pdb=$lowest.pdb
+    pdb=${lowest:0:29}.pdb
+    #cd $RM1_D/opt_pdbs/
+    cd $S0_DFT_OPT_SOLV/opt_pdbs/
     
     # -------------------------------------------------------------------
     # Z. Hu, obtain the charge for the PDB file
@@ -50,9 +53,16 @@ for conf in $UNOPT_PDBS/*_0.pdb; do
     # -----------------------------------------------------------------------------------------------------------------
     # Z. Hu, make DFT S0 optimization .com file and move to dft_opt_s0 directory
     # Z. Hu, 11/24/2020, switch M06 to B3LYP for S0_VAC
-    bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p B3LYP/6-31G(d) opt' -c=$CHARGE_PDB -t=$name\_S0_vac -l=$S0_VAC
+    #bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p B3LYP/6-31G(d) opt' -c=$CHARGE_PDB -t=$name\_S0_vac -l=$S0_VAC
+    # Z. Hu, 03/27/2021, make input for MO_OVERLAP and SP-TDDFT
+    # B3LYP
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p B3LYP/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$name\_sp-tddft-b3lyp -l=$SP_TDDFT/b3lyp
+    # wB97XD
+    bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p wB97XD/6-31+G(d,p) td=(NStates=5, 50-50) SCRF=(Solvent=Water) 6D 10F nosymm GFInput' -c=$CHARGE_PDB -ns='CHK' -t=$name\_sp-tddft-wb97xd -l=$SP_TDDFT/wb97xd
+    ## MO_OVERLAP
+    #bash $FLOW_TOOLS/scripts/make-com.sh -i=$pdb -r='#p B3LYP/6-31+G(d,p) SCRF=(Solvent=Water)' -c=$CHARGE_PDB -ns='RWF' -t=$name\_sp-dft-solv -l=$SP_DFT/solv
     # -----------------------------------------------------------------------------------------------------------------
     
-    echo $lowest >> $SP_DFT/lowest-energy-conformers.txt 
-    cd $SP_DFT/completed/
+    echo $lowest >> $SP_DFT_SOLV/lowest-energy-conformers.txt 
+    cd $SP_DFT_SOLV/completed/
 done
